@@ -62,26 +62,10 @@ function getRandomPhraseAsArray(arr) {
     }
     return guessed;
  }
- 
- // display the two screens depending on whether the player wins or loses
- function checkWin() {
-    if (letters.length === shownLetters.length) {
-       overlay.style.display = "";
-       overlay.className = "win";
-       overlayTitle.innerHTML = "Congratulations, you won!! :^)";
-       buttonReset.textContent = "Play again";
-       reset = true;
-    } else if (missed === 5) {
-       overlay.style.display = "";
-       overlay.className = "lose";
-       overlayTitle.innerHTML = "Oh, no! Game Over :^(";
-       buttonReset.textContent = "Try again!";
-       reset = true;
-    }
- }
- 
- // function for resetting the game back to default values. it is called when the reset button is clicked
- function resetGame() {
+
+
+  // function for resetting the game back to default values. it is called when the reset button is clicked
+  function resetGame() {
     if (reset === true) {
        missed = 0;
        for (let i = 0; i < lifeBar.length; i += 1) {
@@ -102,10 +86,42 @@ function getRandomPhraseAsArray(arr) {
        addPhraseToDisplay(newPhraseArray);
     }
  }
+
+  // display the two screens depending on whether the player wins or loses
+  function checkWin() {
+    if (letters.length === shownLetters.length) {
+       overlay.style.display = "";
+       overlay.className = "win";
+       overlayTitle.innerHTML = "Congratulations, you won!! :^)";
+       buttonReset.textContent = "Play again";
+       reset = true;
+    } else if (missed === 5) {
+       overlay.style.display = "";
+       overlay.className = "lose";
+       overlayTitle.innerHTML = "Oh, no! Game Over :^(";
+       buttonReset.textContent = "Try again!";
+       reset = true;
+    }
+ }
+
  
- 
- // when the player click 'start game', hide the overlay. when player wins or loses the resetGame function is called 
- buttonReset.addEventListener("click", () => {
+  /* when a letter is selected, assign it with the class "chosen" and disable it.
+    if the checked letter is wrong, increment the value of 'missed' and replace a liveHeart.png with a lostHeart.png */
+    qwerty.addEventListener("click", event => {
+        const letterFound = checkLetter(event);
+         if (event.target.tagName === "BUTTON") {
+            event.target.className = "chosen";
+            event.target.disabled = true;
+            if (letterFound === false && missed < 5) {
+              lifeBar[missed].setAttribute('src', 'images/lostHeart.png');
+              missed++;
+            }
+         }
+         checkWin();
+      });
+
+   // when the player click 'start game', hide the overlay. when player wins or loses the resetGame function is called 
+   buttonReset.addEventListener("click", () => {
     overlay.style.display = "none";
     if (reset === true && missed === 5) {
        resetGame();
@@ -115,17 +131,4 @@ function getRandomPhraseAsArray(arr) {
     }
  });
  
- /* when a letter is selected, assign it with the class "chosen" and disable it.
-    if the checked letter is wrong, increment the value of 'missed' and replace a liveHeart.png with a lostHeart.png*/
- qwerty.addEventListener("click", event => {
-    const letterFound = checkLetter(event);
-     if (event.target.tagName === "BUTTON") {
-        event.target.className = "chosen";
-        event.target.disabled = true;
-        if (letterFound === false && missed < 5) {
-          lifeBar[missed].setAttribute('src', 'images/lostHeart.png');
-          missed++;
-        }
-     }
-     checkWin();
-  });
+
